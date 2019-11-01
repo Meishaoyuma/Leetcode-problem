@@ -1,0 +1,84 @@
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root==null){
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        Queue<TreeNode> q = new ArrayDeque<>();
+        q.offer(root);
+        int size=1;
+        while(size>0){
+            TreeNode cur = q.poll();
+            if(cur.val==-100){
+                sb.append("null,");
+                continue;
+            }
+            size--;
+            sb.append(cur.val).append(',');
+            if(cur.left!=null){
+                size++;
+                q.offer(cur.left);
+            }
+            else{
+                q.offer(new TreeNode(-100));
+            }
+            if(cur.right!=null){
+                size++;
+                q.offer(cur.right);
+            }
+            else {
+                q.offer(new TreeNode(-100));
+            }
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append(']');
+        return sb.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public static TreeNode deserialize(String data) {
+        if(data.equals("[]")){
+            return null;
+        }
+        String[] strs = data.split(",");
+        int i =0;
+        int val = Integer.parseInt(strs[i++].substring(1));
+        TreeNode root = new TreeNode(val);
+        Queue<TreeNode> q = new ArrayDeque<>();
+        q.offer(root);
+        while(i<strs.length){
+            TreeNode curr = q.poll();
+            if(i==strs.length-1){
+                curr.left=helper(strs[i].substring(1),q);
+                break;
+            }
+            curr.left=helper(strs[i],q);
+            if(curr.left!=null){
+                q.offer(curr.left);
+            }
+            i++;
+            if(i==strs.length-1){
+               curr.right= helper(strs[i].substring(0,strs[i].length()-1),q);
+                break;
+            }
+           curr.right= helper(strs[i],q);
+            if(curr.right!=null){
+                q.offer(curr.right);
+            }
+            i++;
+        }
+
+        return root;
+    }
+    static TreeNode helper(String str,Queue<TreeNode> q){
+        if(str.charAt(0)=='n'){
+            return null;
+        }
+        else{
+            return new TreeNode(Integer.parseInt(str));
+        }
+    }
+}
