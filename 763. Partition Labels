@@ -1,0 +1,29 @@
+//traverse the string one time, we can get the max index of the same char, then traverse again to get the answer.
+class Solution {
+    public List<Integer> partitionLabels(String S) {
+        List<Integer> ans = new ArrayList<>();
+        if(S==null || S.length()==0){
+            ans.add(0);
+            return ans;
+        }
+        Map<Character,Integer> map= new HashMap<>();
+		// this biggest size of map is 26, so O(1) space;
+        char[] chars = S.toCharArray();
+        for(int i=0;i<chars.length;i++){
+            map.put(chars[i],i);
+        }
+        int max=map.get(chars[0]),min=0;
+        for(int i=0;i<chars.length;i++){
+            if(i>max){
+                ans.add(max-min+1);
+                max=map.get(chars[i]);
+                min=i;
+            }
+            else if(max<map.get(chars[i])){
+                max=map.get(chars[i]);
+            }
+        }
+        ans.add(chars.length-min);
+        return ans;
+    }
+}
