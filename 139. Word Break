@@ -1,0 +1,22 @@
+class Solution {
+    boolean[] visited;
+    public boolean wordBreak(String s, List<String> wordDict) {
+        visited = new boolean[s.length()];
+        return helper(s,0,wordDict);
+    }
+    boolean helper(String s, int index,List<String> wordDict){
+        if(index>=s.length()){
+            return true;
+        }
+        for(String word : wordDict){
+            int next = index+word.length()-1;
+            if(s.startsWith(word,index) && !visited[next]){
+                visited[next]=true;
+                if(helper(s,index+word.length(),wordDict)){
+                    return true;
+                }
+            }   
+        }
+        return false;
+    }
+}
