@@ -1,0 +1,30 @@
+class HitCounter {
+    TreeMap<Integer, Integer> tree;
+    int count;
+    /** Initialize your data structure here. */
+    public HitCounter() {
+        tree = new TreeMap<>();
+        count=0;
+    }
+    
+    /** Record a hit.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public void hit(int timestamp) {
+        if(!tree.containsKey(timestamp)){
+            tree.put(timestamp,count);
+        }
+        count++;
+    }
+    
+    /** Return the number of hits in the past 5 minutes.
+        @param timestamp - The current timestamp (in seconds granularity). */
+    public int getHits(int timestamp) {
+        Map.Entry<Integer,Integer> entry =tree.higherEntry(timestamp-300);
+        if(entry==null){
+            return 0;
+        }
+        
+        //int high= tree.floorEntry(timestamp).getValue();
+        return count-entry.getValue();
+    }
+}
