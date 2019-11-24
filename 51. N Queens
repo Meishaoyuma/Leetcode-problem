@@ -1,0 +1,35 @@
+public class Solution {
+  List<List<Integer>> ans;
+  public List<List<Integer>> nqueens(int n) {
+    // Write your solution here
+    ans = new ArrayList<>();
+    helper(0,n, new ArrayList<Integer>());
+    return ans;
+  }
+  void helper(int i, int n, List<Integer> unit){
+    if(unit.size()==n){
+      ans.add(new ArrayList<>(unit));
+      return;
+    }
+    for(int j =0;j<n;j++){
+      //dfs 的经典做法，吞吐
+      if(valid(i,j,unit)){
+        unit.add(j);
+        helper(i+1,n,unit);
+        unit.remove(unit.size()-1);
+      }
+    }
+  }
+  boolean valid(int i ,int j ,List<Integer> unit){
+    for(int row =0 ;row<unit.size();row++){
+      int col = unit.get(row);
+      //判断上方存过的点是否会与该点冲突，如果是，则此处不能放queen，
+      //因为unit里存的点都是该行的上方，所以只需判定3个方向
+      //   ｜          \                  /     
+      if(col==j || col + i-row ==j || col-i+row ==j){
+        return false;
+      }
+    }
+    return true;
+  }
+}
