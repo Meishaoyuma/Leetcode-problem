@@ -1,0 +1,52 @@
+class Solution {
+    public int maximalRectangle(char[][] matrix) {
+        if( matrix==null || matrix.length==0 || matrix[0].length==0){
+            return 0;
+        }
+        int row = matrix.length;
+        int col = matrix[0].length;
+        int[][] leftToRight = new int[row][col];
+        int[][] bottomToTop = new int[row][col];
+        //form leftToRight  O(n^2)
+        for(int i=0;i<row;i++){
+            for(int j =col-1;j>=0;j--){
+                if(matrix[i][j]=='1'){
+                    if(j==col-1){
+                        leftToRight[i][j]= 1;
+                    }
+                    else{
+                        leftToRight[i][j]=leftToRight[i][j+1]+1;
+                    }
+                }
+            }
+        }
+        //form bottomToTop O(n^2)
+        for(int i=row-1;i>=0;i--){
+            for(int j = 0;j<col;j++){
+                if(matrix[i][j]=='1'){
+                    if(i==row-1){
+                        bottomToTop[i][j]= 1;
+                    }
+                    else{
+                        bottomToTop[i][j]=bottomToTop[i+1][j]+1;
+                    }
+                }
+            }
+        }
+        // find max O(n^3)
+        int max =0;
+        for(int i=0;i<row;i++){
+            for(int j =0 ;j<col;j++){
+                if(leftToRight[i][j]!=0){
+                    int maxhorizon = leftToRight[i][j];
+                    for(int addrow=0;addrow<bottomToTop[i][j];addrow++){
+                        maxhorizon=Math.min(maxhorizon,leftToRight[i+addrow][j]);
+                        int area = maxhorizon * (addrow+1);
+                        max =Math.max(area,max);
+                    }
+                }
+            }
+        }
+        return max;
+    }
+}
