@@ -1,0 +1,86 @@
+class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        //divide to groups
+        List<List<String>> groups = new ArrayList<>();
+        int count =0;
+        List<String> units = new ArrayList<>();
+        for(int i =0;i<words.length;i++){
+            count+=words[i].length()+1;
+            if(count<=maxWidth+1){
+                units.add(words[i]);
+            }
+            else{
+                groups.add(units);
+                units= new ArrayList<>();
+                i--;
+                count=0;
+            }
+        }
+        if(units.size()!=0){
+            groups.add(units);
+        }
+        
+        //merge into line
+        List<String> ans = new ArrayList<>();
+        for(int i =0 ;i<groups.size()-1;i++){
+            ans.add(mergeToLine(groups.get(i),maxWidth));
+        }
+        //last line
+        ans.add(mergeLast(groups.get(groups.size()-1), maxWidth));
+    //output
+        return ans;
+    }
+    
+    private String mergeToLine(List<String> list, int maxWidth){
+        //count space left
+        int spaceNumber= maxWidth;
+        for(String s : list){
+            spaceNumber-=s.length();
+        }
+        StringBuilder sb = new StringBuilder();
+        //corner case: list.size==1
+        if(list.size()==1){
+            sb.append(list.get(0));
+            for(int i =0 ;i<spaceNumber;i++){
+                sb.append(' ');
+            }
+            return sb.toString();
+        }
+        //because loop can only smaller than list.size()-1, we just use 1 more space each loop if not //evenly 
+        int loop = spaceNumber/ (list.size()-1);
+        for(int i=0;i< list.size();i++){
+            sb.append(list.get(i));
+            if(i==list.size()-1){
+                break;
+            }
+            // tricky math work
+            if(spaceNumber % (list.size()-1-i) !=0){
+                spaceNumber--;
+                sb.append(' ');
+            }
+            spaceNumber-=loop;
+            for(int j =0; j < loop;j++){
+                sb.append(' ');
+            }
+        }
+        return sb.toString(); 
+    }
+    // last line 
+    private String mergeLast(List<String> list, int maxWidth){
+        int spaceLast= maxWidth;
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i< list.size();i++){
+            spaceLast -=list.get(i).length();
+            sb.append(list.get(i));
+            if(spaceLast>0){
+                sb.append(' ');
+                spaceLast--;
+            }
+        }
+        while(spaceLast>0){
+            sb.append(' ');
+            spaceLast--;
+        }
+        return sb.toString();
+    }
+}
